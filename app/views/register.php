@@ -11,17 +11,32 @@
 				<form action="/register" method="post">
 					<div class="mb-3">
 						<label for="nama" class="form-label">Nama</label>
-						<input name="nama" type="text" class="form-control" id="nama">
+						<input name="nama" type="text" class="form-control" id="nama" value="<?= session()->old('nama') ?>">
+
+						<?php if (session()->hasError('nama')): ?>
+							<label for="nama" class="text-danger mt-2 small">
+								<?= session()->getError('nama') ?>.
+							</label>
+						<?php endif; ?>
+
 					</div>
 
 					<div class="mb-3">
 						<label for="username" class="form-label">Username</label>
-						<input name="username" type="text" class="form-control" id="username">
+						<input name="username" type="text" class="form-control" id="username"
+							value="<?= session()->old('username') ?>">
+
+						<?php if (session()->hasError('username')): ?>
+							<label for="username" class="text-danger mt-2 small">
+								<?= session()->getError('username') ?>.
+							</label>
+						<?php endif; ?>
+
 					</div>
 
 					<div class="mb-3">
 						<label for="email" class="form-label">Email</label>
-						<input name="email" type="email" class="form-control" id="email">
+						<input name="email" type="email" class="form-control" id="email" value="<?= session()->old('email') ?>">
 					</div>
 
 					<div class="mb-3">

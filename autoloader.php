@@ -19,8 +19,6 @@ $dirs = [
 	__DIR__ . '\\app\\Models',
 ];
 
-
-
 foreach ($dirs as $dir) {
 	foreach (glob("$dir\\*.php") as $file) {
 		require_once $file;

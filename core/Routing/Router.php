@@ -4,10 +4,11 @@ namespace core\Routing;
 
 use core\Application as App;
 use Closure;
+use Core\Http\Response;
+use core\View\View;
 
 class Router
 {
-
 	protected array $routes = [];
 
 	protected array $currentRouteActionParams = [];
@@ -39,7 +40,14 @@ class Router
 			$action = [new $action[0], $action[1]];
 		}
 
-		return call_user_func($action, ...$this->currentRouteActionParams);
+		session()->input($_POST);
+		$response = call_user_func($action, ...$this->currentRouteActionParams);
+
+		if ($response instanceof View) {
+			$response = new Response($response);
+		}
+
+		$response->send();
 	}
 
 	protected function getAction()

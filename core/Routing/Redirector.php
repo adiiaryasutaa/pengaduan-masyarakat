@@ -2,18 +2,17 @@
 
 namespace Core\Routing;
 
+use Core\Http\RedirectResponse;
+
 class Redirector
 {
-	public static function to(string $to)
+	public static function to(string $to): RedirectResponse
 	{
-		header("Location: $to", 301);
-		exit();
+		return new RedirectResponse($to);
 	}
 
-	public static function back()
+	public static function back(): RedirectResponse
 	{
-		if (isset($_SERVER['HTTP_REFERER'])) {
-			return self::to($_SERVER['HTTP_REFERER']);
-		}
+		return self::to($_SERVER['HTTP_REFERER'] ?? '/');
 	}
 }

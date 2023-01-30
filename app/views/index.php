@@ -13,24 +13,32 @@
 <section class="py-5" id="form-lapor">
 	<div class="container d-flex justify-content-center">
 		<div class="w-50">
-			<?php if (Core\Application::getSessionManager()->has('__.flash.user-not-authed')): ?>
+
+			<?php if (session()->hasFlash('user-not-authed')): ?>
 				<div class="alert alert-danger" role="alert">
-					<?= flash('user-not-authed') ?>
+					<?= session()->getFlash('user-not-authed') ?>
 				</div>
 			<?php endif; ?>
-			<?php if (Core\Application::getSessionManager()->has('__.flash.failed-create-laporan')): ?>
+
+			<?php if (session()->hasFlash('failed-create-laporan')): ?>
 				<div class="alert alert-danger" role="alert">
-					<?= flash('failed-create-laporan') ?>
+					<?= session()->getFlash('failed-create-laporan') ?>
 				</div>
 			<?php endif; ?>
-			<?php if (Core\Application::getSessionManager()->has('__.flash.laporan-created-successfully')): ?>
+
+			<?php if (session()->hasFlash('laporan-created-successfully')): ?>
 				<div class="alert alert-success" role="alert">
-					<?= flash('laporan-created-successfully') ?>
+					<?= session()->getFlash('laporan-created-successfully') ?>
 				</div>
 			<?php endif; ?>
+
 			<div class="border rounded p-4">
 				<div class="bg-danger px-3 py-2 fs-5 fw-semibold text-light rounded mb-3">
 					Sampaikan Laporan Anda
+				</div>
+
+				<div class="text-danger mb-4">
+					*Pastikan Anda telah masuk
 				</div>
 
 				<form action="/lapor" method="post">

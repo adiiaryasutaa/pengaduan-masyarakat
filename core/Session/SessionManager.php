@@ -2,6 +2,8 @@
 
 namespace Core\Session;
 
+use Core\Support\Arr;
+
 class SessionManager
 {
 	public function __construct(?string $cacheExpire = null, ?string $cacheLimiter = null)
@@ -32,20 +34,16 @@ class SessionManager
 		return $this;
 	}
 
-	public function get(string $key)
+	public function get(string $key, $default = null)
 	{
 		$this->startIfOff();
 
-		if ($this->has($key)) {
-			return $_SESSION[$key];
-		}
-
-		return null;
+		return Arr::get($_SESSION, $key, $default);
 	}
 
-	public function pull(string $key)
+	public function pull(string $key, $default = null)
 	{
-		$value = $this->get($key);
+		$value = $this->get($key, $default);
 		$this->remove($key);
 		return $value;
 	}
@@ -54,7 +52,7 @@ class SessionManager
 	{
 		$this->startIfOff();
 
-		$_SESSION[$key] = $value;
+		Arr::set($_SESSION, $key, $value);
 
 		return $this;
 	}
@@ -63,9 +61,7 @@ class SessionManager
 	{
 		$this->startIfOff();
 
-		if ($this->has($key)) {
-			unset($_SESSION[$key]);
-		}
+		Arr::remove($_SESSION, $key);
 	}
 
 	public function clear(): void
@@ -79,6 +75,91 @@ class SessionManager
 	{
 		$this->startIfOff();
 
-		return array_key_exists($key, $_SESSION);
+		return Arr::has($_SESSION, $key);
+	}
+
+	public function flash(string|array $keys, $value = null)
+	{
+		if (is_string($keys)) {
+			$this->set("__flash__.$keys", $value);
+		} else {
+			foreach ($keys as $key => $value) {
+				$this->flash($key, $value);
+			}
+		}
+
+		return $this;
+	}
+
+	public function error(string|array $keys, $value = null)
+	{
+		if (is_string($keys)) {
+			$this->set("__error__.$keys", $value);
+		} else {
+			foreach ($keys as $key => $value) {
+				$this->error($key, $value);
+			}
+		}
+
+		return $this;
+	}
+
+	public function flashExists()
+	{
+		return Arr::has($_SESSION, '__flash__');
+	}
+
+	public function hasFlash(string $key): bool
+	{
+		$this->startIfOff();
+
+		return $this->flashExists() && Arr::has($_SESSION['__flash__'], $key);
+	}
+
+	public function getFlash(string $key, $default = null)
+	{
+		return $this->pull("__flash__.$key", $default);
+	}
+
+	public function errorExists()
+	{
+		return Arr::has($_SESSION, '__error__');
+	}
+
+	public function hasError(string $key): bool
+	{
+		$this->startIfOff();
+
+		return $this->errorExists() && Arr::has($_SESSION['__error__'], $key);
+	}
+
+	public function getError(string $key, $default = null)
+	{
+		return $this->pull("__error__.$key", $default);
+	}
+
+	public function input(string|array $keys, $value = null)
+	{
+		if (is_string($keys)) {
+			$this->set("__old__.$keys", $value);
+		} else {
+			foreach ($keys as $key => $value) {
+				$this->input($key, $value);
+			}
+		}
+
+		return $this;
+	}
+
+	public function old(string $name, $default = null)
+	{
+		return $this->pull("__old__.$name", $default);
+	}
+
+	public function resetInput()
+	{
+		$this->remove('__old__');
+
+		return $this;
 	}
 }

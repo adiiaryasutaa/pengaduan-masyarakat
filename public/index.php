@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__ . "\\..\\autoloader.php");
+require_once(__DIR__ . "\\..\\loader.php");
 
 use Core\Application as App;
 

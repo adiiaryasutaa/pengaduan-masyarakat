@@ -11,12 +11,12 @@
 				<a class="nav-link" href="#">Tentang</a>
 			</div>
 		</div>
-		<?php if (!Core\Application::getAuth()->authed()): ?>
+		<?php if (!auth()->authed()): ?>
 			<a href="/login" class="btn text-light me-4" type="button">Masuk</a>
 			<a href="/register" class="btn btn-light text-danger" type="button">Daftar</a>
 		<?php else: ?>
 			<div class="text-light me-4">
-				<?= Core\Application::getAuth()->user()->name ?>
+				<?= auth()->user()->name ?>
 			</div>
 			<form action="/logout" method="post">
 				<button class="btn btn-light text-danger" type="submit">Logout</button>

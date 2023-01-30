@@ -25,7 +25,7 @@ class Auth
 		$user = $preparedStatement->fetch(PDO::FETCH_ASSOC);
 
 		if ($user && password_verify($password, $user['password'])) {
-			Application::getSessionManager()->set('__.auth.user', $username);
+			session()->set('__auth__.user', $username);
 			return true;
 		}
 
@@ -34,7 +34,7 @@ class Auth
 
 	public function authed()
 	{
-		return Application::getSessionManager()->has('__.auth.user');
+		return session()->has('__auth__.user');
 	}
 
 	public function user()
@@ -45,7 +45,7 @@ class Auth
 
 		$connection = Application::getConnection();
 
-		$username = Application::getSessionManager()->get('__.auth.user');
+		$username = session()->get('__auth__.user');
 
 		$preparedStatement = $connection->prepare("SELECT name, email, username FROM users WHERE username = :username");
 		$preparedStatement->bindParam(':username', $username);
@@ -64,6 +64,6 @@ class Auth
 
 	public function logout()
 	{
-		Application::getSessionManager()->remove('__.auth.user');
+		session()->remove('__auth__.user');
 	}
 }

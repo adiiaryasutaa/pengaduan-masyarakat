@@ -8,13 +8,13 @@ class View
 
 	protected array $nests = [];
 
-	protected string $content;
+	protected string $original;
 
 	public function __construct(string $content, array $data = [], array $nests = [])
 	{
 		$this->data = $data;
 		$this->nests = $nests;
-		$this->content = $this->getContent($content);
+		$this->original = $content;
 	}
 
 	public function nest(string $replace, string|View $view)
@@ -24,31 +24,24 @@ class View
 		return $this;
 	}
 
-	protected function getContent($content): bool|string
+	public function render(): bool|string
 	{
-		foreach ($this->data as $key => $value) {
-			$$key = $value;
-		}
+		$content = '';
 
-		if (file_exists($path = fromBasePath("app\\views\\{$content}.php"))) {
+		if (file_exists($path = fromBasePath("app\\views\\{$this->original}.php"))) {
+			foreach ($this->data as $key => $value) {
+				$$key = $value;
+			}
+
 			ob_start();
 			include_once($path);
-			return ob_get_clean();
+			$content = ob_get_clean();
+		}
+
+		foreach ($this->nests as $replace => $nest) {
+			$content = str_replace($replace, $nest->render(), $content);
 		}
 
 		return $content;
-	}
-
-	public function build()
-	{
-		foreach ($this->nests as $replace => $nest) {
-			$this->content = str_replace($replace, $nest, $this->content);
-		}
-	}
-
-	public function __toString()
-	{
-		$this->build();
-		return $this->content;
 	}
 }

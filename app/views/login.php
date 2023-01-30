@@ -3,9 +3,15 @@
 		<div class="w-50">
 			<a href="/" type="button" class="btn text-danger mb-4">Kembali ke halaman utama</a>
 
-			<?php if (Core\Application::getSessionManager()->has('__.flash.register-success')): ?>
+			<?php if (session()->hasFlash('register-success')): ?>
 				<div class="alert alert-success" role="alert">
-					<?= flash('register-success') ?>
+					<?= session()->getFlash('register-success') ?>
+				</div>
+			<?php endif; ?>
+
+			<?php if (session()->hasError('login-failed')): ?>
+				<div class="alert alert-danger" role="alert">
+					<?= session()->getError('login-failed') ?>
 				</div>
 			<?php endif; ?>
 

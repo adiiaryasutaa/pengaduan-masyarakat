@@ -1,6 +1,7 @@
 <?php
 
 use Core\Application as App;
+use Core\Routing\Redirector;
 use core\View\View;
 
 function fromBasePath(string $path)
@@ -31,4 +32,14 @@ function flash(string $key, $default = null)
 	$session = App::getSessionManager();
 
 	return $session->pull("__.flash.$key") ?? $default;
+}
+
+function redirect(string $to)
+{
+	return Redirector::to($to);
+}
+
+function back()
+{
+	return Redirector::back();
 }

@@ -3,15 +3,14 @@
 namespace App\Controller;
 
 use App\Model\User;
-use Core\Application;
 use Core\Http\Controller;
 
 class AuthController extends Controller
 {
 	public function register()
 	{
-		if ($this->auth()->authed()) {
-			$this->redirect('/');
+		if (auth()->authed()) {
+			return redirect('/');
 		}
 
 		return view('layouts/auth', ['title' => 'Daftar'])
@@ -20,8 +19,10 @@ class AuthController extends Controller
 
 	public function store()
 	{
-		if ($this->auth()->authed()) {
-			$this->redirect('/');
+		//dd(session()->old('nama'));
+
+		if (auth()->authed()) {
+			return redirect('/');
 		}
 
 		$inputs = [
@@ -34,6 +35,10 @@ class AuthController extends Controller
 
 		$errors = [];
 
+		if (!strlen($inputs['name'])) {
+			$errors['nama'] = 'Nama Anda dibutuhkan';
+		}
+
 		if (User::valueExists('email', $inputs['email'])) {
 			$errors['email'] = 'Email sudah terdaftar';
 		}
@@ -44,28 +49,27 @@ class AuthController extends Controller
 
 		if ($inputs['password'] !== $inputs['verify-password']) {
 			$errors['password'] = 'Password dan verifikasi password harus sama';
-			$errors['verify-password'] = 'Password dan verifikasi password harus sama';
+			$errors['verifikasi-password'] = 'Password dan verifikasi password harus sama';
 		}
 
 		if (count($errors)) {
 			// Redirect back with errors
-			$this->back();
+			return back()->error($errors);
 		}
 
 		$inputs['password'] = password_hash($inputs['password'], PASSWORD_BCRYPT);
 
 		if (User::store($inputs)) {
-			$this->flash('register-success', 'Proses pendaftaran sukses, silakan masuk');
-			$this->redirect('/login');
+			return redirect('/login')->with('register-success', 'Proses pendaftaran sukses, silakan masuk');
 		}
 
-		$this->back();
+		return back();
 	}
 
 	public function login()
 	{
-		if ($this->auth()->authed()) {
-			$this->redirect('/');
+		if (auth()->authed()) {
+			return redirect('/');
 		}
 
 		return view('layouts/auth', ['title', 'Masuk'])
@@ -74,8 +78,8 @@ class AuthController extends Controller
 
 	public function authenticate()
 	{
-		if ($this->auth()->authed()) {
-			$this->redirect('/');
+		if (auth()->authed()) {
+			return redirect('/');
 		}
 
 		$credentials = [
@@ -83,18 +87,18 @@ class AuthController extends Controller
 			'password' => $this->request()->string('password'),
 		];
 
-		if ($this->auth()->attempt($credentials)) {
+		if (auth()->attempt($credentials)) {
 			// regenerate session
-			Application::getSessionManager()->regenerate();
-			$this->redirect('/');
+			session()->regenerate();
+			return redirect('/');
 		}
 
-		$this->back();
+		return back()->error('login-failed', 'Login gagal, silakan coba lagi');
 	}
 
 	public function logout()
 	{
-		$this->auth()->logout();
-		$this->back();
+		auth()->logout();
+		return back();
 	}
 }

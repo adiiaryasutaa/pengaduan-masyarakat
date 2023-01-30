@@ -4,19 +4,48 @@ namespace Core\Http;
 
 use Core\Application as App;
 
-class RedirectResponse
+class RedirectResponse extends Response
 {
-	public function flash(array $data)
-	{
-		$session = App::getSessionManager();
+	protected string $targetUrl;
 
-		$session->set('__.flash', $data);
+	public function __construct(string $url, int $status = 302)
+	{
+		parent::__construct('', $status);
+		$this->setTargetUrl($url);
 	}
 
-	public function error(array $errors)
+	public function setTargetUrl(string $url)
 	{
-		$session = App::getSessionManager();
+		$this->targetUrl = $url;
 
-		$session->set('__.error', $errors);
+		$this->setContent(
+			"
+			<!DOCTYPE html>
+			<html>
+				<head>
+					<meta charset=\"UTF-8\" />
+					<meta http-equiv=\"refresh\" content=\"0;url='{$this->targetUrl}'\" />
+					<title>Redirecting to {$this->targetUrl}</title>
+				</head>
+				<body>
+					Redirecting to <a href=\"{$this->targetUrl}\">{$this->targetUrl}</a>.
+				</body>
+			</html>
+			"
+		);
+	}
+
+	public function with(string|array $key, $value = null)
+	{
+		session()->flash($key, $value);
+
+		return $this;
+	}
+
+	public function error(string|array $key, $value = null)
+	{
+		session()->error($key, $value);
+
+		return $this;
 	}
 }

@@ -23,4 +23,9 @@ class Request
 	{
 		return (string) $this->post($name);
 	}
+
+	public function date(string $name)
+	{
+		return date('Y-m-d', strtotime($this->post($name)));
+	}
 }

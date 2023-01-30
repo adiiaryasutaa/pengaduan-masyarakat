@@ -3,6 +3,7 @@
 $dirs = [
 	// Core
 	__DIR__ . '\\core',
+	__DIR__ . '\\core\\Auth',
 	__DIR__ . '\\core\\Config',
 	__DIR__ . '\\core\\Database',
 	__DIR__ . '\\core\\Http',

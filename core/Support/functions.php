@@ -25,3 +25,10 @@ function dd(...$vars)
 	echo "</pre>";
 	exit();
 }
+
+function flash(string $key, $default = null)
+{
+	$session = App::getSessionManager();
+
+	return $session->pull("__.flash.$key") ?? $default;
+}

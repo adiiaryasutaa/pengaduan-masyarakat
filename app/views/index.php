@@ -1,5 +1,4 @@
 <!-- HERO SECTION -->
-
 <section class="bg-danger" style="padding-top: 12rem; padding-bottom: 12rem">
 	<div class="container d-flex flex-column justify-content-center align-items-center text-light">
 		<h1>Pengaduan Online Masyarakat</h1>
@@ -8,40 +7,57 @@
 			laporan</a>
 	</div>
 </section>
-
 <!-- HERO SECTION -->
 
 <!-- FORM LAPOR -->
 <section class="py-5" id="form-lapor">
 	<div class="container d-flex justify-content-center">
-		<div class="w-50 border rounded p-4">
-			<div class="bg-danger px-3 py-2 fs-5 fw-semibold text-light rounded mb-3">
-				Sampaikan Laporan Anda
+		<div class="w-50">
+			<?php if (Core\Application::getSessionManager()->has('__.flash.user-not-authed')): ?>
+				<div class="alert alert-danger" role="alert">
+					<?= flash('user-not-authed') ?>
+				</div>
+			<?php endif; ?>
+			<?php if (Core\Application::getSessionManager()->has('__.flash.failed-create-laporan')): ?>
+				<div class="alert alert-danger" role="alert">
+					<?= flash('failed-create-laporan') ?>
+				</div>
+			<?php endif; ?>
+			<?php if (Core\Application::getSessionManager()->has('__.flash.laporan-created-successfully')): ?>
+				<div class="alert alert-success" role="alert">
+					<?= flash('laporan-created-successfully') ?>
+				</div>
+			<?php endif; ?>
+			<div class="border rounded p-4">
+				<div class="bg-danger px-3 py-2 fs-5 fw-semibold text-light rounded mb-3">
+					Sampaikan Laporan Anda
+				</div>
+
+				<form action="/lapor" method="post">
+					<div class="mb-3">
+						<label for="judul-laporan" class="form-label">Judul laporan</label>
+						<input name="judul-laporan" type="text" class="form-control" id="judul-laporan">
+					</div>
+
+					<div class="mb-3">
+						<label for="isi-laporan" class="form-label">Isi laporan</label>
+						<textarea name="isi-laporan" class="form-control" id="isi-laporan" rows="5"></textarea>
+					</div>
+
+					<div class="mb-3">
+						<label for="tangal-kejadian" class="form-label">Tanggal kejadian</label>
+						<input name="tangal-kejadian" type="date" class="form-control" id="tangal-kejadian">
+					</div>
+
+					<div class="mb-3">
+						<label for="lokasi-kejadian" class="form-label">Lokasi kejadian</label>
+						<textarea name="lokasi-kejadian" class="form-control" id="lokasi-kejadian" rows="2"></textarea>
+					</div>
+
+					<button class="btn btn-danger" type="submit">Kirim</button>
+				</form>
 			</div>
-
-			<form action="/lapor" method="post">
-				<div class="mb-3">
-					<label for="judul-laporan" class="form-label">Judul laporan</label>
-					<input name="judul-laporan" type="text" class="form-control" id="judul-laporan">
-				</div>
-
-				<div class="mb-3">
-					<label for="isi-laporan" class="form-label">Isi laporan</label>
-					<textarea name="isi-laporan" class="form-control" id="isi-laporan" rows="5"></textarea>
-				</div>
-
-				<div class="mb-3">
-					<label for="tangal-kejadian" class="form-label">Tanggal kejadian</label>
-					<input name="tangal-kejadian" type="date" class="form-control" id="tangal-kejadian">
-				</div>
-
-				<div class="mb-3">
-					<label for="lokasi-kejadian" class="form-label">Lokasi kejadian</label>
-					<textarea name="lokasi-kejadian" class="form-control" id="lokasi-kejadian" rows="2"></textarea>
-				</div>
-			</form>
 		</div>
 	</div>
 </section>
-
 <!-- FORM LAPOR -->

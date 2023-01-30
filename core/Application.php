@@ -2,9 +2,11 @@
 
 namespace Core;
 
+use Core\Auth\Auth;
 use Core\Database\Connection;
 use core\Http\Request;
 use core\Routing\Router;
+use Core\Session\SessionManager;
 
 class Application
 {
@@ -13,6 +15,8 @@ class Application
 	protected static Router $router;
 	protected static Request $request;
 	protected static Connection $connection;
+	protected static SessionManager $sessionManager;
+	protected static Auth $auth;
 
 	public function __construct(array $options)
 	{
@@ -22,6 +26,8 @@ class Application
 		self::$router = new Router();
 		self::$request = new Request();
 		self::$connection = new Connection();
+		self::$sessionManager = new SessionManager();
+		self::$auth = new Auth();
 
 		$this->registerRoutes($options['paths']['route']);
 	}
@@ -59,5 +65,15 @@ class Application
 	public static function getConnection()
 	{
 		return self::$connection;
+	}
+
+	public static function getSessionManager()
+	{
+		return self::$sessionManager;
+	}
+
+	public static function getAuth()
+	{
+		return self::$auth;
 	}
 }
